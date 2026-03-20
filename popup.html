@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Manimate</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="header">
+        <img class="logo" src="logo.svg" alt="Manimate" />
+        <p class="tagline">Learn faster by watching, not reading</p>
+      </header>
+
+      <section class="composer">
+        <textarea
+          id="prompt"
+          class="prompt"
+          placeholder="Visualize Anything"
+          rows="1"
+          spellcheck="false"
+        ></textarea>
+
+        <div class="toolbar">
+          <div class="controlRow">
+            <div class="selector" id="modelSelector">
+              <button id="modelButton" class="pill" type="button" aria-haspopup="menu" aria-expanded="false">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                  <rect x="9" y="9" width="6" height="6"></rect>
+                  <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"></path>
+                </svg>
+                <span id="modelLabel"></span>
+                <svg class="chevron" width="11" height="11" viewBox="0 0 20 20" fill="var(--text-tertiary)" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path>
+                </svg>
+              </button>
+              <div id="modelMenu" class="menu" role="menu"></div>
+            </div>
+
+            <div class="selector" id="voiceSelector">
+              <button id="voiceButton" class="pill iconOnly" type="button" aria-haspopup="menu" aria-expanded="false">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+                <svg class="chevron" width="11" height="11" viewBox="0 0 20 20" fill="var(--text-tertiary)" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path>
+                </svg>
+              </button>
+              <div id="voiceMenu" class="menu" role="menu"></div>
+            </div>
+
+            <div class="selector" id="aspectSelector">
+              <button id="aspectButton" class="pill" type="button" aria-haspopup="menu" aria-expanded="false">
+                <span id="aspectIcon" class="aspectIcon" aria-hidden="true"></span>
+                <span id="aspectLabel"></span>
+                <svg class="chevron" width="11" height="11" viewBox="0 0 20 20" fill="var(--text-tertiary)" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path>
+                </svg>
+              </button>
+              <div id="aspectMenu" class="menu compact" role="menu"></div>
+            </div>
+          </div>
+
+          <button id="open" class="sendButton" type="button" title="Send">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"></path>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <p id="helper" class="helper" aria-live="polite"></p>
+      <p id="error" class="error" role="alert"></p>
+    </main>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
