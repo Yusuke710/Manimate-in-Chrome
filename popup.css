@@ -11,33 +11,22 @@
   --accent: #2bb5a0;
   --accent-hover: #239687;
   --red: #dc2626;
-  --font: -apple-system, "system-ui", "Segoe UI Variable Display", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font: "Figtree", -apple-system, "system-ui", "Segoe UI Variable Display", "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html {
-  border-radius: 20px;
-  overflow: hidden;
-  background: transparent;
-}
-
 body {
   margin: 0;
   width: 396px;
   min-height: 318px;
-  padding: 6px;
-  background:
-    radial-gradient(circle at top center, rgba(43, 181, 160, 0.22), transparent 46%),
-    radial-gradient(circle at bottom right, rgba(43, 181, 160, 0.14), transparent 40%),
-    var(--bg-main);
+  padding: 14px 16px 16px;
+  background: var(--bg-main);
   color: var(--text-primary);
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
-  border-radius: 20px;
-  overflow: hidden;
 }
 
 button,
@@ -51,17 +40,7 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
-.shell {
-  min-height: calc(318px - 12px);
-  padding: 14px 16px 16px;
-  border-radius: 16px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 248, 247, 0.98) 100%);
-  box-shadow:
-    0 0 0 1px rgba(43, 181, 160, 0.16),
-    0 0 0 5px rgba(43, 181, 160, 0.07),
-    0 14px 30px rgba(43, 181, 160, 0.18);
-}
+.shell {}
 
 .header {
   margin-bottom: 12px;
