@@ -23,22 +23,27 @@ This extension is intentionally independent from `Manimate-Infra`. It is a separ
 
 ## Configuration
 
-The extension targets `https://manimate.ai`.
+The extension auto-discovers a local Manimate Studio instance first by probing:
 
-If you want to point it at local dev instead, change `MANIMATE_BASE_URL` in [popup.js](/Users/ymiy/github/2026/Manimate-in-Chrome/popup.js#L1) and reload the unpacked extension.
+- `http://127.0.0.1:3000-3019`
+- `http://localhost:3000-3019`
+
+It only accepts ports that return the dedicated Manimate Studio discovery marker. If no verified local Studio responds, it falls back to `https://manimate.ai`.
 
 The extension stores the user's selected:
 
 - `model`
-- `voice`
+- `voice` (`No Voice`, `Yusuke`, or a pasted voice ID)
 - `aspectRatio`
 
 ## Security Notes
 
 - The extension only auto-prefills from `http:` and `https:` tabs
 - It rejects internal browser pages such as `chrome://`
-- It always constructs the destination from a fixed site origin in code
-- It only sends allowlisted `model`, `voice_id`, and `aspect_ratio` values
+- It only switches to local Studio when a port returns the expected Manimate discovery marker
+- It falls back to `https://manimate.ai` when no verified local Studio is available
+- It only sends allowlisted `model` and `aspect_ratio` values, plus a validated `voice_id`
+- Voice setup stays in Manimate Studio; the extension does not manage ElevenLabs keys or voice browsing
 - It opens `/app`, not `/`, so login redirects preserve the prompt safely
 
 ## File Layout
