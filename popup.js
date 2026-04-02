@@ -2,6 +2,7 @@ const CLOUD_MANIMATE_BASE_URL = "https://manimate.ai";
 const LOCAL_STUDIO_STATUS_PATH = "/api/cloud-sync/status";
 const STUDIO_DISCOVERY_HEADER_NAME = "x-manimate-studio";
 const STUDIO_DISCOVERY_HEADER_VALUE = "local";
+const STUDIO_DISCOVERY_BODY_VALUE = "manimate-local";
 const LOCAL_STUDIO_HOSTS = ["127.0.0.1", "localhost"];
 const LOCAL_STUDIO_PORT_START = 3000;
 const LOCAL_STUDIO_PORT_ATTEMPTS = 20;
@@ -53,6 +54,7 @@ const VALID_ASPECT_RATIOS = new Set(ASPECT_RATIOS.map((entry) => entry.id));
 
 const promptEl = document.getElementById("prompt");
 const openEl = document.getElementById("open");
+const targetEl = document.getElementById("target");
 const helperEl = document.getElementById("helper");
 const errorEl = document.getElementById("error");
 
@@ -98,12 +100,8 @@ function setHelper(message) {
   helperEl.textContent = message || "";
 }
 
-function getLaunchTargetLabel(baseUrl) {
-  try {
-    return new URL(baseUrl).host;
-  } catch {
-    return baseUrl.replace(/^https?:\/\//, "");
-  }
+function setTarget(message) {
+  targetEl.textContent = message || "";
 }
 
 function getModelById(id) {
@@ -203,7 +201,7 @@ function normalizeLoopbackBaseUrl(value) {
   }
 }
 
-function isStudioStatusPayload(value) {
+function isCloudSyncStatusPayload(value) {
   return Boolean(
     value
       && typeof value === "object"
@@ -213,21 +211,36 @@ function isStudioStatusPayload(value) {
   );
 }
 
+function hasStudioMarker(payload, headerValue) {
+  if (headerValue === STUDIO_DISCOVERY_HEADER_VALUE) return true;
+
+  return Boolean(
+    payload
+      && (
+        payload.local_studio === true
+        || payload.studio === STUDIO_DISCOVERY_BODY_VALUE
+      )
+  );
+}
+
 function buildHelperMessage() {
-  const promptMessage = activePageUrl
-    ? "Current page URL inserted. Edit it or replace it with any text prompt."
-    : "Type any prompt to launch Manimate from the popup.";
+  return activePageUrl
+    ? "Current page URL inserted."
+    : "";
+}
 
-  const targetMessage = launchTargetReady
-    ? launchTarget.kind === "local"
-      ? `Opening local Studio at ${getLaunchTargetLabel(launchTarget.baseUrl)}.`
-      : "Opening manimate.ai."
-    : "Checking for local Studio...";
+function buildTargetMessage() {
+  if (!launchTargetReady) return "Open in: checking local...";
+  return `Open in: ${launchTarget.baseUrl}`;
+}
 
-  return `${promptMessage} ${targetMessage}`;
+function buildLaunchUrl(target) {
+  const pathname = target.kind === "local" ? "/" : "/app";
+  return new URL(pathname, target.baseUrl);
 }
 
 function renderHelper() {
+  setTarget(buildTargetMessage());
   setHelper(buildHelperMessage());
 }
 
@@ -293,10 +306,12 @@ async function probeLocalStudio(baseUrl) {
     });
 
     if (!response.ok) return null;
-    if (response.headers.get(STUDIO_DISCOVERY_HEADER_NAME) !== STUDIO_DISCOVERY_HEADER_VALUE) return null;
 
     const payload = await response.json();
-    if (!isStudioStatusPayload(payload)) return null;
+    const headerValue = response.headers.get(STUDIO_DISCOVERY_HEADER_NAME);
+    if (!isCloudSyncStatusPayload(payload)) return null;
+    if (headerValue && headerValue !== STUDIO_DISCOVERY_HEADER_VALUE) return null;
+    if (!hasStudioMarker(payload, headerValue)) return null;
 
     return baseUrl;
   } catch {
@@ -578,7 +593,7 @@ async function openInManimate() {
 
   try {
     const target = await resolveLaunchTarget({ forceRefresh: true });
-    const launchUrl = new URL("/app", target.baseUrl);
+    const launchUrl = buildLaunchUrl(target);
     launchUrl.searchParams.set("prompt", prompt);
     launchUrl.searchParams.set("send", "1");
     launchUrl.searchParams.set("model", state.model);
