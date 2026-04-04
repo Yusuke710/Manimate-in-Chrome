@@ -25,8 +25,8 @@ This extension is intentionally independent from `Manimate-Infra`. It is a separ
 
 The extension auto-discovers a local Manimate Studio instance first by probing:
 
-- `http://127.0.0.1:3000-3019`
-- `http://localhost:3000-3019`
+- `http://127.0.0.1:32179-32198`
+- `http://localhost:32179-32198`
 
 It only accepts ports that return the dedicated Manimate Studio discovery marker. If no verified local Studio responds, it falls back to `https://manimate.ai`.
 
