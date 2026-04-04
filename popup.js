@@ -201,13 +201,20 @@ function normalizeLoopbackBaseUrl(value) {
   }
 }
 
-function isCloudSyncStatusPayload(value) {
+function isLocalStudioStatusPayload(value, options = {}) {
+  const markedLocal = options.markedLocal === true;
+  if (!value || typeof value !== "object") return false;
+  if (typeof value.status !== "string") return false;
+
+  if (markedLocal) {
+    return true;
+  }
+
   return Boolean(
-    value
-      && typeof value === "object"
-      && typeof value.status === "string"
-      && typeof value.connected === "boolean"
-      && typeof value.base_url === "string"
+    typeof value.connected === "boolean"
+      || typeof value.base_url === "string"
+      || typeof value.connect_url === "string"
+      || typeof value.message === "string"
   );
 }
 
@@ -309,8 +316,10 @@ async function probeLocalStudio(baseUrl) {
 
     const payload = await response.json();
     const headerValue = response.headers.get(STUDIO_DISCOVERY_HEADER_NAME);
-    if (!isCloudSyncStatusPayload(payload)) return null;
     if (headerValue && headerValue !== STUDIO_DISCOVERY_HEADER_VALUE) return null;
+    if (!isLocalStudioStatusPayload(payload, { markedLocal: headerValue === STUDIO_DISCOVERY_HEADER_VALUE })) {
+      return null;
+    }
     if (!hasStudioMarker(payload, headerValue)) return null;
 
     return baseUrl;
