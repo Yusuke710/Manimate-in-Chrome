@@ -3,7 +3,8 @@ const LOCAL_STUDIO_STATUS_PATH = "/api/cloud-sync/status";
 const STUDIO_DISCOVERY_HEADER_NAME = "x-manimate-studio";
 const STUDIO_DISCOVERY_HEADER_VALUE = "local";
 const STUDIO_DISCOVERY_BODY_VALUE = "manimate-local";
-const LOCAL_STUDIO_HOSTS = ["127.0.0.1", "localhost"];
+const CANONICAL_LOCAL_STUDIO_HOST = "127.0.0.1";
+const LOCAL_STUDIO_HOSTS = [CANONICAL_LOCAL_STUDIO_HOST, "localhost"];
 const LOCAL_STUDIO_PORT_START = 32179;
 const LOCAL_STUDIO_PORT_ATTEMPTS = 20;
 const LOCAL_STUDIO_PROBE_TIMEOUT_MS = 350;
@@ -187,15 +188,30 @@ function normalizeBaseUrl(value) {
   return value.replace(/\/+$/, "");
 }
 
-function normalizeLoopbackBaseUrl(value) {
+function canonicalizeLoopbackHost(hostname) {
+  if (typeof hostname !== "string") return null;
+  const normalized = hostname.trim().toLowerCase();
+  if (!normalized) return null;
+  return LOCAL_STUDIO_HOSTS.includes(normalized) ? CANONICAL_LOCAL_STUDIO_HOST : null;
+}
+
+function isLocalStudioPortInRange(port) {
+  return Number.isInteger(port) && port >= LOCAL_STUDIO_PORT_START && port < LOCAL_STUDIO_PORT_START + LOCAL_STUDIO_PORT_ATTEMPTS;
+}
+
+function normalizeLoopbackBaseUrl(value, options = {}) {
+  const allowAnyPort = options.allowAnyPort === true;
   if (typeof value !== "string" || value.trim().length === 0) return null;
 
   try {
     const parsed = new URL(value);
     if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
-    if (!LOCAL_STUDIO_HOSTS.includes(parsed.hostname)) return null;
-    if (!parsed.port) return null;
-    return normalizeBaseUrl(`${parsed.protocol}//${parsed.hostname}:${parsed.port}`);
+    const canonicalHost = canonicalizeLoopbackHost(parsed.hostname);
+    if (!canonicalHost) return null;
+    const port = Number.parseInt(parsed.port || "", 10);
+    if (!Number.isFinite(port) || port <= 0) return null;
+    if (!allowAnyPort && !isLocalStudioPortInRange(port)) return null;
+    return normalizeBaseUrl(`${parsed.protocol}//${canonicalHost}:${port}`);
   } catch {
     return null;
   }
