@@ -101,8 +101,22 @@ function setHelper(message) {
   helperEl.textContent = message || "";
 }
 
-function setTarget(message) {
+function setTargetText(message) {
+  targetEl.replaceChildren();
   targetEl.textContent = message || "";
+}
+
+function setTargetLink(baseUrl) {
+  targetEl.replaceChildren();
+  if (!baseUrl) return;
+
+  targetEl.append("Open in: ");
+  const link = document.createElement("a");
+  link.href = baseUrl;
+  link.textContent = baseUrl;
+  link.target = "_blank";
+  link.rel = "noreferrer noopener";
+  targetEl.append(link);
 }
 
 function getModelById(id) {
@@ -252,18 +266,22 @@ function buildHelperMessage() {
     : "";
 }
 
-function buildTargetMessage() {
-  if (!launchTargetReady) return "Open in: checking local...";
-  return `Open in: ${launchTarget.baseUrl}`;
-}
-
 function buildLaunchUrl(target) {
   const pathname = target.kind === "local" ? "/" : "/app";
   return new URL(pathname, target.baseUrl);
 }
 
+function renderTarget() {
+  if (!launchTargetReady) {
+    setTargetText("Open in: checking local...");
+    return;
+  }
+
+  setTargetLink(launchTarget.baseUrl);
+}
+
 function renderHelper() {
-  setTarget(buildTargetMessage());
+  renderTarget();
   setHelper(buildHelperMessage());
 }
 

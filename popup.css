@@ -330,6 +330,16 @@ textarea:focus-visible {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+.target a {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.target a:hover {
+  color: var(--accent);
+}
+
 .helper {
   color: var(--text-tertiary);
 }
