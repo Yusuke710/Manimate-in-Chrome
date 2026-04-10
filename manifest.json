@@ -23,6 +23,16 @@
     "http://localhost/*"
   ],
   "permissions": ["activeTab", "storage"],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://127.0.0.1/*",
+        "http://localhost/*"
+      ],
+      "js": ["launch-bridge.js"],
+      "run_at": "document_start"
+    }
+  ],
   "content_security_policy": {
     "extension_pages": "default-src 'self'; connect-src 'self' http://127.0.0.1:* http://localhost:*; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com"
   }

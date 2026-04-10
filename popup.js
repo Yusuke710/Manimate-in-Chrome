@@ -12,6 +12,7 @@ const LOCAL_STUDIO_PROBE_TIMEOUT_MS = 350;
 const DEFAULT_MODEL = "claude-opus-4-6";
 const DEFAULT_VOICE_ID = "Lci8YeL6PAFHJjNKvwXq";
 const DEFAULT_ASPECT_RATIO = "16:9";
+const LAUNCH_HASH_FLAG = "manimate_chrome_launch";
 const NONE_VOICE_ID = "none";
 const VOICE_ID_PATTERN = /^[a-zA-Z0-9]{8,64}$/;
 
@@ -267,8 +268,19 @@ function buildHelperMessage() {
 }
 
 function buildLaunchUrl(target) {
-  const pathname = target.kind === "local" ? "/" : "/app";
+  const pathname = target.kind === "local" ? "/" : "/launch";
   return new URL(pathname, target.baseUrl);
+}
+
+function attachLaunchPayload(url, payload) {
+  const hashParams = new URLSearchParams();
+  hashParams.set(LAUNCH_HASH_FLAG, "1");
+  hashParams.set("prompt", payload.prompt);
+  hashParams.set("send", "1");
+  hashParams.set("model", payload.model);
+  hashParams.set("voice_id", payload.voiceId);
+  hashParams.set("aspect_ratio", payload.aspectRatio);
+  url.hash = hashParams.toString();
 }
 
 function renderTarget() {
@@ -637,11 +649,14 @@ async function openInManimate() {
   try {
     const target = await resolveLaunchTarget({ forceRefresh: true });
     const launchUrl = buildLaunchUrl(target);
-    launchUrl.searchParams.set("prompt", prompt);
-    launchUrl.searchParams.set("send", "1");
-    launchUrl.searchParams.set("model", state.model);
-    launchUrl.searchParams.set("voice_id", state.voice);
-    launchUrl.searchParams.set("aspect_ratio", state.aspectRatio);
+    const payload = {
+      prompt,
+      model: state.model,
+      voiceId: state.voice,
+      aspectRatio: state.aspectRatio,
+    };
+
+    attachLaunchPayload(launchUrl, payload);
 
     await chrome.tabs.create({ url: launchUrl.toString() });
     window.close();
