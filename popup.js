@@ -9,12 +9,12 @@ const LOCAL_STUDIO_PORT_START = 32179;
 const LOCAL_STUDIO_PORT_ATTEMPTS = 20;
 const LOCAL_STUDIO_PROBE_TIMEOUT_MS = 350;
 
-const DEFAULT_MODEL = "claude-opus-4-6";
-const DEFAULT_VOICE_ID = "Lci8YeL6PAFHJjNKvwXq";
+const DEFAULT_MODEL = "claude";
+const DEFAULT_VOICE_ID = "af_heart";
 const DEFAULT_ASPECT_RATIO = "16:9";
 const LAUNCH_HASH_FLAG = "manimate_chrome_launch";
 const NONE_VOICE_ID = "none";
-const VOICE_ID_PATTERN = /^[a-zA-Z0-9]{8,64}$/;
+const VOICE_ID_PATTERN = /^(?:[a-z]{1,2}_[a-z0-9_]{2,64}|[a-zA-Z0-9]{8,64})$/;
 
 const STORAGE_KEYS = {
   model: "preferredModel",
@@ -25,23 +25,29 @@ const STORAGE_KEYS = {
 
 const MODELS = [
   {
-    id: "kimi-k2.5",
-    label: "Manimate Lite",
-    description: "A lightweight agent for everyday animations",
+    id: "claude",
+    label: "Claude",
+    description: "Run Manimate with Claude Code",
   },
   {
-    id: "claude-opus-4-6",
-    label: "Manimate Pro",
-    description: "Best quality, 10x Lite credit usage",
+    id: "codex",
+    label: "Codex",
+    description: "Run Manimate with Codex CLI",
   },
 ];
 
 const VOICES = [
   {
+    id: "af_heart",
+    label: "Heart",
+    description: "Kokoro local voice, free",
+    isDefault: true,
+  },
+  {
     id: "Lci8YeL6PAFHJjNKvwXq",
     label: "Yusuke",
-    description: "Japanese accent, narration",
-    isDefault: true,
+    description: "ElevenLabs legacy, Japanese accent",
+    isDefault: false,
   },
 ];
 
@@ -272,7 +278,20 @@ function buildLaunchUrl(target) {
   return new URL(pathname, target.baseUrl);
 }
 
-function attachLaunchPayload(url, payload) {
+function setLaunchSearchParams(url, payload) {
+  url.searchParams.set("prompt", payload.prompt);
+  url.searchParams.set("send", "1");
+  url.searchParams.set("model", payload.model);
+  url.searchParams.set("voice_id", payload.voiceId);
+  url.searchParams.set("aspect_ratio", payload.aspectRatio);
+}
+
+function attachLaunchPayload(url, payload, target) {
+  if (target.kind === "local") {
+    setLaunchSearchParams(url, payload);
+    return;
+  }
+
   const hashParams = new URLSearchParams();
   hashParams.set(LAUNCH_HASH_FLAG, "1");
   hashParams.set("prompt", payload.prompt);
@@ -550,7 +569,7 @@ function renderSelectors() {
         spellcheck="false"
         data-custom-voice-input="1"
       />
-      <div class="menuHint">Paste any ElevenLabs voice ID. Voice setup stays in Manimate Studio.</div>
+      <div class="menuHint">Paste a Kokoro or ElevenLabs voice ID. Voice setup stays in Manimate Studio.</div>
       <div class="menuActionRow">
         <button class="menuButtonSecondary" type="button" data-apply-custom-voice="1"${customVoiceId ? "" : " disabled"}>Use Voice ID</button>
       </div>
@@ -656,7 +675,7 @@ async function openInManimate() {
       aspectRatio: state.aspectRatio,
     };
 
-    attachLaunchPayload(launchUrl, payload);
+    attachLaunchPayload(launchUrl, payload, target);
 
     await chrome.tabs.create({ url: launchUrl.toString() });
     window.close();

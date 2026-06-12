@@ -1,10 +1,10 @@
 const LAUNCH_HASH_FLAG = "manimate_chrome_launch";
 const NONE_VOICE_ID = "none";
-const VOICE_ID_PATTERN = /^[a-zA-Z0-9]{8,64}$/;
+const VOICE_ID_PATTERN = /^(?:[a-z]{1,2}_[a-z0-9_]{2,64}|[a-zA-Z0-9]{8,64})$/;
 
 const VALID_MODEL_IDS = new Set([
-  "kimi-k2.5",
-  "claude-opus-4-6",
+  "claude",
+  "codex",
 ]);
 
 const VALID_ASPECT_RATIOS = new Set([
