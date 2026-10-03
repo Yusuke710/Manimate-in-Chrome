@@ -13,7 +13,10 @@
     <main class="shell">
       <header class="header">
         <img class="logo" src="logo.svg" alt="Manimate" />
-        <p class="tagline">Learn faster by watching, not reading</p>
+        <div class="header-caption">
+          <p class="tagline">Learn faster by watching, not reading</p>
+          <p id="helper" class="helper" aria-live="polite"></p>
+        </div>
       </header>
 
       <section class="composer">
@@ -74,7 +77,6 @@
 
       <p id="target" class="target" aria-live="polite"></p>
       <p class="target"><a href="https://manimate.ai/library" target="_blank" rel="noreferrer">My videos ↗</a></p>
-      <p id="helper" class="helper" aria-live="polite"></p>
       <p id="error" class="error" role="alert"></p>
     </main>
 
