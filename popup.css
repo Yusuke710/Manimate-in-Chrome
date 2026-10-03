@@ -21,7 +21,6 @@
 body {
   margin: 0;
   width: 396px;
-  min-height: 318px;
   padding: 14px 16px 16px;
   background: var(--bg-main);
   color: var(--text-primary);
@@ -350,9 +349,6 @@ textarea:focus-visible {
 .startButton{background:var(--accent);border:0;border-radius:8px;padding:9px 15px;color:var(--text-primary);font:500 13px Figtree,sans-serif;cursor:pointer}
 
 .header-caption {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
   margin-top: 6px;
 }
 
@@ -364,11 +360,11 @@ textarea:focus-visible {
 }
 
 .header-caption .helper {
-  flex: 0 0 130px;
+  margin-top: 4px;
   font-size: 11px;
-  text-align: right;
 }
 
+.error:empty,
 .header-caption .helper:empty {
   display: none;
 }
