@@ -1,37 +1,20 @@
-# Manimate In Chrome
+# Manimate in Chrome
 
-Chrome extension for sending the current page into Manimate.
+Send a webpage or prompt to your local Manimate workspace, and open your saved Manim Cloud videos.
 
 ## Install
 
-1. Open `chrome://extensions`
-2. Enable `Developer mode`
-3. Click `Load unpacked`
-4. Select this repo folder
+1. Open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select this folder.
+2. Open the extension and click **Start Manimate**.
+3. On your first visit, copy its command into a terminal. Choose local rendering or sign in to Manim Cloud with Google.
+4. After setup, **Start Manimate** starts the installed app and opens your workspace. No terminal is needed for ordinary launches.
 
-## Behavior
+The bundled public manifest key keeps the unpacked extension ID stable. When publishing to the Chrome Web Store, register that store ID with the native host. The first-install command includes the active extension ID automatically.
 
-- Prefills the prompt from the active tab when the page is `http:` or `https:`
-- Opens Manimate with the selected logical runtime `model` (`claude` or `codex`), `voice`, and `aspectRatio`
-- Sends local Studio launches as query params so the current app can read them immediately
-- Uses the URL hash for cloud launch payload transport so long prompts avoid request-line limits
-- Opens cloud launches on `/launch`, which stores a short launch intent before auth redirects
-- Keeps the local launch bridge for older hash-based local launch links
-- Probes local Studio on `http://127.0.0.1:32179-32198` and `http://localhost:32179-32198`
-- Normalizes loopback matches to `http://127.0.0.1:<port>`
-- Reuses cached local Studio URLs only inside the `32179-32198` range
-- Falls back to `https://manimate.ai` when no verified local Studio is available
+## Behavior and verification
 
-## Safety
+The popup probes ports 32179–32198 and accepts only the Manimate discovery marker from `/api/status`. If the app is stopped, the native messaging host accepts only a fixed `start` operation. Prompt text never becomes a shell command. The launch page waits for readiness and then transfers the prompt, selected model, voice, and aspect ratio to the local workspace. If setup is required, the same page shows the one-time terminal command and resumes automatically when Manimate starts.
 
-- Ignores non-`http(s)` pages such as `chrome://`
-- Accepts a local target only when it returns the Manimate discovery marker
-- Sends only allowlisted `model` values (`claude` or `codex`) and `aspect_ratio` values plus a validated `voice_id`
-- Opens cloud launches on `/launch` so auth redirects only need to preserve a short launch pointer
+**My videos** opens the Google-authenticated library at https://cloud.manimate.ai/library. There is no hosted-chat fallback.
 
-## Files
-
-- `manifest.json` - MV3 manifest
-- `popup.html` - popup UI
-- `popup.js` - discovery and launch logic
-- `popup.css` - popup styles
+Run `node --test tests/*.test.mjs` for local discovery checks. Native messaging requires the host installed by Manimate and an extension reload after manifest changes.

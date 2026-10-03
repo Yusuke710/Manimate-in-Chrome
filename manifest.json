@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Manimate In Chrome",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Open the current page in Manimate.",
   "icons": {
     "16": "icons/icon16.png",
@@ -22,18 +22,25 @@
     "http://127.0.0.1/*",
     "http://localhost/*"
   ],
-  "permissions": ["activeTab", "storage"],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "nativeMessaging"
+  ],
   "content_scripts": [
     {
       "matches": [
         "http://127.0.0.1/*",
         "http://localhost/*"
       ],
-      "js": ["launch-bridge.js"],
+      "js": [
+        "launch-bridge.js"
+      ],
       "run_at": "document_start"
     }
   ],
   "content_security_policy": {
     "extension_pages": "default-src 'self'; connect-src 'self' http://127.0.0.1:* http://localhost:*; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com"
-  }
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApYvq3C/Rp1P+TJ87T4LGnAm8igx8QsUSe69GQPe0EpTrHhlHC7ETtDIsvifpEM0m0FyqlXmM/cviPE7vZNAzo0lKSVcirEOafUnzjbfQRu+hFu2Yh6PKhoFNmZnQZvMd6NPC9AXBzIuEq0ltt70+YZjcMJiwFEn7cvqauPUZSK90XfAK+XZLE2U/90mzkW6UPaKuAGEK/e1WkwgJUEkDQDJ4PEa7dCZKj7ugHLmpy+e6DUmxItdVQMgzd7QoAkO3tJxJWzg0Rk13gcIy4m5RysH5gz4pgAs2i2EY1VppXOGVGpRB0Tjaq5+EDR6Fm8qko7rVrhJ0ArzCw8L6N3GWzwIDAQAB"
 }

@@ -347,3 +347,4 @@ textarea:focus-visible {
 .error {
   color: var(--red);
 }
+.startButton{background:var(--accent);border:0;border-radius:8px;padding:9px 15px;color:var(--text-primary);font:500 13px Figtree,sans-serif;cursor:pointer}
