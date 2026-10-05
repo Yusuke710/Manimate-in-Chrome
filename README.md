@@ -2,6 +2,10 @@
 
 Send a webpage or prompt to your local Manimate workspace, and open your saved Manim Cloud videos.
 
+[![Watch Manimate turn a URL into a video](assets/demo-preview.jpg)](https://youtu.be/RDOpsAR9iUI)
+
+[Watch the demo](https://youtu.be/RDOpsAR9iUI): open a paper, click Manimate, and press Send. Generation and playback are sped up as labeled.
+
 ## Install
 
 1. Open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select this folder.
